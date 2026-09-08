@@ -19,17 +19,23 @@ namespace Solution
 
         private void Start()
         {
-            growAction = InputSystem.actions.FindAction("Grow");
+            // Use null-conditional in case InputSystem.actions is not available
+            growAction = InputSystem.actions?.FindAction("Grow");
+            if (growAction == null)
+            {
+                Debug.LogWarning("Grow action not found. Grow input will be disabled.");
+            }
+
             moveDirection = Vector3.up;
             isAlive = true;
             // เริ่ม Coroutine สำหรับการเคลื่อนที่
             StartCoroutine(MoveParade());
-
         }
 
         private void Update()
         {
-            if (growAction.triggered)
+            // Guard against null InputAction to avoid NullReferenceException
+            if (growAction != null && growAction.triggered)
             {
                 Grow();
             }
